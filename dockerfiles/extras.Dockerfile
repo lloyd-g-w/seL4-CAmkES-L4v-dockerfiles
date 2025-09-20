@@ -19,6 +19,20 @@ ARG TARGETPLATFORM
 # hadolint ignore=DL3008,DL3009
 RUN apt-get update -q \
     && apt-get install -y --no-install-recommends \
-        # Add more dependencies here
         cowsay \
-        sudo
+        sudo \
+        pkg-config \
+        libssl-dev \
+        curl \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+    && . "$HOME/.cargo/env" \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN cargo install \
+    --git https://github.com/vi/websocat.git \
+    --features ssl
+
+RUN cp /root/.cargo/bin/websocat /usr/local/bin/
+
