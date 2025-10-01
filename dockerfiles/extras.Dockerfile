@@ -36,3 +36,19 @@ RUN cargo install \
 
 RUN cp /root/.cargo/bin/websocat /usr/local/bin/
 
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    wget \
+    curl \
+    software-properties-common \
+ && wget https://apt.llvm.org/llvm.sh \
+ && chmod +x llvm.sh \
+ && ./llvm.sh 14 \
+ && apt-get install -y clang-14 lld-14
+
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 190 && \
+    update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 190 && \
+    update-alternatives --set clang /usr/bin/clang-14 && \
+    update-alternatives --set clang++ /usr/bin/clang++-14
